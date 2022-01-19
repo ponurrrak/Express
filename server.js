@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 
+const isLogged = () => false;
+
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -13,10 +15,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/user', (req, res, next) => {
-  res.forceLogin = () => {
-    res.show('login.html');
-  };
-  next();
+  isLogged() ? next() : res.show('login.html');
 });
 
 app.get(/^\/(home)?$/, (req, res) => {
@@ -28,11 +27,11 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/user/settings', (req, res) => {
-  res.forceLogin();
+  res.show('settings.html');
 });
 
 app.get('/user/panel', (req, res) => {
-  res.forceLogin();
+  res.show('panel.html');
 });
 
 app.use((req, res) => {
